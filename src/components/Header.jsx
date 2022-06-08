@@ -11,15 +11,27 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import { Button, Menu, MenuItem } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
-import MarkunreadMailboxIcon from "@mui/icons-material/MarkunreadMailbox";
+import Userfront from "@userfront/react";
+import { useStateMachine } from "little-state-machine";
+import { logout } from "../actions";
 
-const items = [
-  { id: 1, title: "My Posts", icon: <MarkAsUnreadIcon />, link: "posts" },
-  { id: 2, title: "Send email", icon: <InboxIcon /> },
-];
 export default function NavBar() {
+  const {
+    actions,
+    state: { isAuthenticated },
+  } = useStateMachine({ logout });
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const items = [
+    {
+      id: 1,
+      title: "My Posts",
+      icon: <MarkAsUnreadIcon />,
+      link: "posts",
+      isProtected: true,
+    },
+    { id: 2, title: "Send email", icon: <InboxIcon />, isProtected: false },
+  ];
   const toggleDrawer = (state) => (event) => {
     if (
       event.type === "keydown" &&
@@ -35,11 +47,16 @@ export default function NavBar() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    setAnchorEl(null);
+    Userfront.logout();
+    actions.logout();
+    // navigate("/profile");
+  };
+  const handleProfileClick = async () => {
     setAnchorEl(null);
     navigate("/profile");
   };
-
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -63,21 +80,30 @@ export default function NavBar() {
             >
               <span style={{ cursor: "pointer" }}>Posty</span>
             </Typography>
-            <Button color="inherit" onClick={() => {}}>
-              Login
-            </Button>
+            {!isAuthenticated && (
+              <Button color="inherit" onClick={() => navigate("login")}>
+                Login
+              </Button>
+            )}
+            {!isAuthenticated && (
+              <Button color="inherit" onClick={() => navigate("signup")}>
+                Sign Up
+              </Button>
+            )}
 
             <>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
+              {isAuthenticated && (
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              )}
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -94,7 +120,7 @@ export default function NavBar() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Logout</MenuItem>
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
               </Menu>
             </>
           </Toolbar>

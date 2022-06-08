@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import BlogPost from "../components/BlogPost";
-import usePost from "../hooks/usePost";
+import useUserPosts from "../hooks/useUserPosts";
 import { Alert, Pagination } from "@mui/material";
 import { Box } from "@mui/system";
 import Spinner from "../components/Spinner";
@@ -14,7 +14,6 @@ import DialogBox from "../components/DialogBox";
 import { useMutation } from "react-query";
 import { api } from "../api";
 import { queryClient } from "../main";
-import { omit } from "lodash";
 const theme = createTheme();
 
 export default function BlogPosts() {
@@ -27,6 +26,9 @@ export default function BlogPosts() {
       onSuccess: () => {
         queryClient.invalidateQueries("posts");
       },
+      onError:(error,variables,context) => {
+        console.log({error,variables,context});
+      }
     }
   );
   const handleClickOpen = () => setOpen(true);
@@ -35,7 +37,7 @@ export default function BlogPosts() {
   const handleChange = (event, value) => {
     setPage(value);
   };
-  const { data, isLoading, error } = usePost(1, page - 1, limit);
+  const { data, isLoading, error } = useUserPosts(1, page , limit);
   if (error) {
     const { msg } = error.response.data;
     return (

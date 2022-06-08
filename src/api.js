@@ -1,8 +1,8 @@
 import axios from "axios";
-// import { appId } from "./config";
+// import Userfront from "@userfront/react";
 export const api = axios.create({
   // headers: {
-  //   "app-id": "appId",
+  //   Authorization: "Userfront.tokens.accessToken",
   // },
   baseURL: "http://localhost:8080",
 });

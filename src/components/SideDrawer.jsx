@@ -6,8 +6,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
+import { useStateMachine } from "little-state-machine";
 
 export default function SideDrawer({ sideItems, isDrawerOpen, toggleDrawer }) {
+  const {
+    state: { isAuthenticated },
+  } = useStateMachine();
   const navigate = useNavigate();
   const list = () => (
     <Box
@@ -17,12 +21,14 @@ export default function SideDrawer({ sideItems, isDrawerOpen, toggleDrawer }) {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {sideItems.map(({ id, title, icon: Icon, link }) => (
-          <ListItem button key={id} onClick={() => navigate(link || "/")}>
-            <ListItemIcon>{Icon}</ListItemIcon>
-            <ListItemText primary={title} />
-          </ListItem>
-        ))}
+        {sideItems.map(({ id, title, icon: Icon, link, isProtected }) =>
+          isProtected && !isAuthenticated ? null : (
+            <ListItem button key={id} onClick={() => navigate(link || "/")}>
+              <ListItemIcon>{Icon}</ListItemIcon>
+              <ListItemText primary={title} />
+            </ListItem>
+          )
+        )}
       </List>
     </Box>
   );
