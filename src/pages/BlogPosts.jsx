@@ -18,7 +18,7 @@ const theme = createTheme();
 
 export default function BlogPosts() {
   const [page, setPage] = React.useState(1);
-  const limit = 20;
+  const limit = 10;
   const [open, setOpen] = React.useState(false);
   const { isLoading: isMutationLoading, mutateAsync } = useMutation(
     (post) => api.post("post", post),
@@ -26,9 +26,9 @@ export default function BlogPosts() {
       onSuccess: () => {
         queryClient.invalidateQueries("posts");
       },
-      onError:(error,variables,context) => {
-        console.log({error,variables,context});
-      }
+      onError: (error, variables, context) => {
+        console.log({ error, variables, context });
+      },
     }
   );
   const handleClickOpen = () => setOpen(true);
@@ -37,7 +37,7 @@ export default function BlogPosts() {
   const handleChange = (event, value) => {
     setPage(value);
   };
-  const { data, isLoading, error } = useUserPosts(1, page , limit);
+  const { data, isLoading, error } = useUserPosts(1, page, limit);
   if (error) {
     const { msg } = error.response.data;
     return (

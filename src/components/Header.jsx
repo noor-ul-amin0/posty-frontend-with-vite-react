@@ -13,13 +13,11 @@ import { Button, Menu, MenuItem } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import Userfront from "@userfront/react";
 import { useStateMachine } from "little-state-machine";
-import { logout } from "../actions";
 
 export default function NavBar() {
   const {
-    actions,
     state: { isAuthenticated },
-  } = useStateMachine({ logout });
+  } = useStateMachine();
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const items = [
@@ -50,7 +48,6 @@ export default function NavBar() {
   const handleClose = async () => {
     setAnchorEl(null);
     Userfront.logout();
-    actions.logout();
     // navigate("/profile");
   };
   const handleProfileClick = async () => {

@@ -15,10 +15,10 @@ export default function Login() {
     state: { isAuthenticated },
   } = useStateMachine();
   const location = useLocation();
-  // const to = location.state?.from?.pathname || "/";
-  // if (isAuthenticated) {
-  //   return <Navigate to={to} state={{ from: location }} replace />;
-  // }
+  const to = location.state?.from?.pathname || "/";
+  if (isAuthenticated) {
+    return <Navigate to={to} state={{ from: location }} replace />;
+  }
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 4 }}>
